@@ -86,15 +86,18 @@ $sql = "SELECT p.rowid, p.ref, p.statut, p.datec";
 $sql.= " ,f.rowid as facid, f.facnumber, f.total_ttc";
 $sql.= " , s.rowid as socid, s.nom, s.code_client";
 $sql.= " , pl.amount, pl.statut as statut_ligne, pl.rowid as rowid_ligne";
+$sql.= " , sr.iban_prefix, sr.bic, sr.fk_soc";
 $sql.= " FROM ".MAIN_DB_PREFIX."lcr_bons as p";
 $sql.= " , ".MAIN_DB_PREFIX."lcr_lignes as pl";
 $sql.= " , ".MAIN_DB_PREFIX."lcr_facture as pf";
 $sql.= " , ".MAIN_DB_PREFIX."facture as f";
 $sql.= " , ".MAIN_DB_PREFIX."societe as s";
+$sql.= " , ".MAIN_DB_PREFIX."societe_rib as sr";
 $sql.= " WHERE pl.fk_lcr_bons = p.rowid";
 $sql.= " AND pf.fk_lcr_lignes = pl.rowid";
 $sql.= " AND pf.fk_facture = f.rowid";
 $sql.= " AND f.fk_soc = s.rowid";
+$sql.= " AND f.fk_soc = sr.fk_soc";
 $sql.= " AND f.entity = ".$conf->entity;
 if ($socid) $sql.= " AND s.rowid = ".$socid;
 if ($search_line)
@@ -140,6 +143,8 @@ if ($result)
     print_liste_field_titre($langs->trans("BankdraftBills"),$_SERVER["PHP_SELF"],"f.facnumber",'',$urladd);
     print_liste_field_titre($langs->trans("BankdraftCompany"),$_SERVER["PHP_SELF"],"s.nom");
     print_liste_field_titre($langs->trans("BankdraftCustomerCode"),$_SERVER["PHP_SELF"],"s.code_client",'','','align="center"');
+    print_liste_field_titre($langs->trans("iban"),$_SERVER["PHP_SELF"],"sr.iban_prefix",'','','align="left"');
+    print_liste_field_titre($langs->trans("bic"),$_SERVER["PHP_SELF"],"s.bic",'','','align="left"');
     print_liste_field_titre($langs->trans("BankdraftDate"),$_SERVER["PHP_SELF"],"p.datec","","",'align="center"');
     print_liste_field_titre($langs->trans("BankdraftRequestAmount"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
 	print_liste_field_titre($langs->trans("BankdraftRequestAmountTtc"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
@@ -154,6 +159,8 @@ if ($result)
    
     print '<td class="liste_titre"><input type="text" class="flat" name="search_societe" value="'. $search_societe.'" size="12"></td>';
     print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code" value="'. $search_code.'" size="8"></td>';
+    print '<td class="liste_titre">&nbsp;</td>';
+    print '<td class="liste_titre">&nbsp;</td>';
     print '<td class="liste_titre">&nbsp;</td>';
     print '<td class="liste_titre">&nbsp;</td>';
 	print '<td class="liste_titre">&nbsp;</td>';
@@ -192,6 +199,8 @@ if ($result)
         print '<td><a href="'.dol_buildpath('/comm/card.php?socid='.$obj->socid,1).'">'.$obj->nom."</a></td>\n";
 
         print '<td align="center"><a href="'.dol_buildpath('/comm/card.php?socid='.$obj->socid,1).'">'.$obj->code_client."</a></td>\n";
+		print '<td align="left">'.$obj->iban_prefix."</td>\n";
+		print '<td align="left">'.$obj->bic."</td>\n";
 
         print '<td align="center">'.dol_print_date($db->jdate($obj->datec),'day')."</td>\n";
 
