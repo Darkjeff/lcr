@@ -70,6 +70,26 @@ $search_code = GETPOST('search_code','alpha');
 $search_societe = GETPOST('search_societe','alpha');
 $statut = GETPOST('statut','int');
 
+// add choice column
+$arrayfields=array(
+    'p.ref'=>array('label'=>$langs->trans("BankdraftReceipts"), 'checked'=>1),
+    'f.facnumber'=>array('label'=>$langs->trans("BankdraftBills"), 'checked'=>1),
+	's.nom'=>array('label'=>$langs->trans("BankdraftCompany"), 'checked'=>1),
+	's.code_client'=>array('label'=>$langs->trans("BankdraftCustomerCode"), 'checked'=>1),
+	//// to do change trans
+	's.code_compta'=>array('label'=>$langs->trans("AccountingCustomerCode"), 'checked'=>1),
+	'sr.iban_prefix'=>array('label'=>$langs->trans("iban"), 'checked'=>1),
+	'sr.bic'=>array('label'=>$langs->trans("bic"), 'checked'=>1),
+	///////
+	'p.datec'=>array('label'=>$langs->trans("BankdraftDate"), 'checked'=>1),
+	'pl.amount'=>array('label'=>$langs->trans("BankdraftRequestAmount"), 'checked'=>1),
+	'f.total_ttc'=>array('label'=>$langs->trans("BankdraftRequestAmountTtc"), 'checked'=>1)
+	
+	);
+
+//////////////
+
+
 $bon=new BonLcr($db,"");
 $ligne=new LigneLcr($db,$user);
 
@@ -84,7 +104,7 @@ llxHeader('',$langs->trans("BankdraftLines"));
 
 $sql = "SELECT p.rowid, p.ref, p.statut, p.datec";
 $sql.= " ,f.rowid as facid, f.facnumber, f.total_ttc";
-$sql.= " , s.rowid as socid, s.nom, s.code_client";
+$sql.= " , s.rowid as socid, s.nom, s.code_client, s.code_compta";
 $sql.= " , pl.amount, pl.statut as statut_ligne, pl.rowid as rowid_ligne";
 $sql.= " , sr.iban_prefix, sr.bic, sr.fk_soc";
 $sql.= " FROM ".MAIN_DB_PREFIX."lcr_bons as p";
@@ -120,6 +140,15 @@ if ($search_societe)
 {
     $sql .= " AND s.nom LIKE '%".$search_societe."%'";
 }
+
+
+
+
+
+
+
+
+
 $sql.=$db->order($sortfield,$sortorder);
 $sql.=$db->plimit($conf->liste_limit+1, $offset);
 
@@ -143,8 +172,9 @@ if ($result)
     print_liste_field_titre($langs->trans("BankdraftBills"),$_SERVER["PHP_SELF"],"f.facnumber",'',$urladd);
     print_liste_field_titre($langs->trans("BankdraftCompany"),$_SERVER["PHP_SELF"],"s.nom");
     print_liste_field_titre($langs->trans("BankdraftCustomerCode"),$_SERVER["PHP_SELF"],"s.code_client",'','','align="center"');
+	print_liste_field_titre($langs->trans("AccountingCustomerCode"),$_SERVER["PHP_SELF"],"s.code_compta",'','','align="center"');
     print_liste_field_titre($langs->trans("iban"),$_SERVER["PHP_SELF"],"sr.iban_prefix",'','','align="left"');
-    print_liste_field_titre($langs->trans("bic"),$_SERVER["PHP_SELF"],"s.bic",'','','align="left"');
+    print_liste_field_titre($langs->trans("bic"),$_SERVER["PHP_SELF"],"sr.bic",'','','align="left"');
     print_liste_field_titre($langs->trans("BankdraftDate"),$_SERVER["PHP_SELF"],"p.datec","","",'align="center"');
     print_liste_field_titre($langs->trans("BankdraftRequestAmount"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
 	print_liste_field_titre($langs->trans("BankdraftRequestAmountTtc"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
@@ -159,6 +189,7 @@ if ($result)
    
     print '<td class="liste_titre"><input type="text" class="flat" name="search_societe" value="'. $search_societe.'" size="12"></td>';
     print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code" value="'. $search_code.'" size="8"></td>';
+	print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code_compta" value="'. $search_code_compta.'" size="8"></td>';
     print '<td class="liste_titre">&nbsp;</td>';
     print '<td class="liste_titre">&nbsp;</td>';
     print '<td class="liste_titre">&nbsp;</td>';
@@ -199,6 +230,7 @@ if ($result)
         print '<td><a href="'.dol_buildpath('/comm/card.php?socid='.$obj->socid,1).'">'.$obj->nom."</a></td>\n";
 
         print '<td align="center"><a href="'.dol_buildpath('/comm/card.php?socid='.$obj->socid,1).'">'.$obj->code_client."</a></td>\n";
+		print '<td align="left">'.$obj->code_compta."</td>\n";
 		print '<td align="left">'.$obj->iban_prefix."</td>\n";
 		print '<td align="left">'.$obj->bic."</td>\n";
 
