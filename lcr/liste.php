@@ -263,19 +263,24 @@ if ($result)
         print '</a></td>';
 		}
 		
+		
 		// Bordereau
-
-        print '<td>';
-
+		if (! empty($arrayfields['p.ref']['checked']))
+		{		
+		print '<td>';
         print $bon->LibStatut($obj->statut,2);
         print "&nbsp;";
-
         print '<a href="fiche.php?id='.$obj->rowid.'">'.$obj->ref."</a></td>\n";
-
+		}
+		
+		// ref facture
+		if (! empty($arrayfields['f.facnumber']['checked']))
+		{	
         print '<td><a href="'.DOL_URL_ROOT.'/compta/facture/card.php?facid='.$obj->facid.'">';
         print img_object($langs->trans("ShowBill"),"bill");
         print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/card.php?facid='.$obj->facid.'">'.$obj->facnumber."</a></td>\n";
         print '</a></td>';
+		}
 
         print '<td><a href="'.dol_buildpath('/comm/card.php?socid='.$obj->socid,1).'">'.$obj->nom."</a></td>\n";
 
