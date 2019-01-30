@@ -245,7 +245,15 @@ if ($result)
         $obj = $db->fetch_object($result);
 
         $var=!$var;
+		
+		print '<tr class="oddeven">';
 
+		// reference
+		if (! empty($arrayfields['p.ref']['checked']))
+		{
+			print "<td>";
+		
+		
         print "<tr ".$bc[$var]."><td>";
 
         print $ligne->LibStatut($obj->statut_ligne,2);
@@ -253,6 +261,9 @@ if ($result)
         print '<a href="'.dol_buildpath('/lcr/ligne.php?id='.$obj->rowid_ligne,1).'">';
         print substr('000000'.$obj->rowid_ligne, -6);
         print '</a></td>';
+		}
+		
+		// Bordereau
 
         print '<td>';
 
