@@ -281,18 +281,54 @@ if ($result)
         print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/card.php?facid='.$obj->facid.'">'.$obj->facnumber."</a></td>\n";
         print '</a></td>';
 		}
-
+		
+		// societe
+		if (! empty($arrayfields['s.nom']['checked']))
+		{
         print '<td><a href="'.dol_buildpath('/comm/card.php?socid='.$obj->socid,1).'">'.$obj->nom."</a></td>\n";
-
+		}
+		
+		//code client
+		if (! empty($arrayfields['s.code_client']['checked']))
+		{
         print '<td align="center"><a href="'.dol_buildpath('/comm/card.php?socid='.$obj->socid,1).'">'.$obj->code_client."</a></td>\n";
+		}
+		
+		// accounting code customer
+		if (! empty($arrayfields['s.code_compta']['checked']))
+		{
 		print '<td align="left">'.$obj->code_compta."</td>\n";
+		}
+		
+		// IBAN 
+		if (! empty($arrayfields['sr.iban_prefix']['checked']))
+		{
 		print '<td align="left">'.$obj->iban_prefix."</td>\n";
+		}
+		// bic
+		if (! empty($arrayfields['sr.bic']['checked']))
+		{
 		print '<td align="left">'.$obj->bic."</td>\n";
-
+		}
+		
+		// asked date
+		if (! empty($arrayfields['p.datec']['checked']))
+		{
         print '<td align="center">'.dol_print_date($db->jdate($obj->datec),'day')."</td>\n";
-
+		}
+		
+		//total lcr
+		if (! empty($arrayfields['pl.amount']['checked']))
+		{
         print '<td align="right">'.price($obj->amount)."</td>\n";
+		}
+		
+		//total ttc
+		if (! empty($arrayfields['f.total_ttc']['checked']))
+		{
 		print '<td align="right">'.price($obj->total_ttc)."</td>\n";
+		}
+		
 
         print '<td>&nbsp;</td>';
 
