@@ -168,14 +168,6 @@ if ($search_societe)
     $sql .= " AND s.nom LIKE '%".$search_societe."%'";
 }
 
-
-
-
-
-
-
-
-
 $sql.=$db->order($sortfield,$sortorder);
 $sql.=$db->plimit($conf->liste_limit+1, $offset);
 
@@ -190,25 +182,40 @@ if ($result)
 
     print_barre_liste($langs->trans("BankdraftLines"), $page, "liste.php", $urladd, $sortfield, $sortorder, '', $num);
 
+	$varpage=empty($contextpage)?$_SERVER["PHP_SELF"]:$contextpage;
+    $selectedfields=$form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage);
+	
+	
+	print '<form method="POST" id="searchFormList" action="' . $_SERVER["PHP_SELF"] . '">';
+	if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
+	print '<input type="hidden" name="action" value="list">';
+	print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
+	print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
+	print '<input type="hidden" name="page" value="'.$page.'">';
+	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
+	
     print"\n<!-- debut table -->\n";
-    print '<table class="liste" width="100%">';
+    print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
-    print '<tr class="liste_titre">';
+    print '<tr class="liste_titre_filter">';
     print '<td class="liste_titre">'.$langs->trans("BankdraftLine").'</td>';
-    print_liste_field_titre($langs->trans("BankdraftReceipts"),$_SERVER["PHP_SELF"],"p.ref");
-    print_liste_field_titre($langs->trans("BankdraftBills"),$_SERVER["PHP_SELF"],"f.facnumber",'',$urladd);
-    print_liste_field_titre($langs->trans("BankdraftCompany"),$_SERVER["PHP_SELF"],"s.nom");
-    print_liste_field_titre($langs->trans("BankdraftCustomerCode"),$_SERVER["PHP_SELF"],"s.code_client",'','','align="center"');
-	print_liste_field_titre($langs->trans("AccountingCustomerCode"),$_SERVER["PHP_SELF"],"s.code_compta",'','','align="center"');
-    print_liste_field_titre($langs->trans("iban"),$_SERVER["PHP_SELF"],"sr.iban_prefix",'','','align="left"');
-    print_liste_field_titre($langs->trans("bic"),$_SERVER["PHP_SELF"],"sr.bic",'','','align="left"');
-    print_liste_field_titre($langs->trans("BankdraftDate"),$_SERVER["PHP_SELF"],"p.datec","","",'align="center"');
-    print_liste_field_titre($langs->trans("BankdraftRequestAmount"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
-	print_liste_field_titre($langs->trans("BankdraftRequestAmountTtc"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
+    if (! empty($arrayfields['p.ref']['checked']))				print_liste_field_titre($langs->trans("BankdraftReceipts"),$_SERVER["PHP_SELF"],"p.ref");
+    if (! empty($arrayfields['f.facnumber']['checked']))		print_liste_field_titre($langs->trans("BankdraftBills"),$_SERVER["PHP_SELF"],"f.facnumber",'',$urladd);
+    if (! empty($arrayfields['s.nom']['checked']))				print_liste_field_titre($langs->trans("BankdraftCompany"),$_SERVER["PHP_SELF"],"s.nom");
+    if (! empty($arrayfields['s.code_client']['checked']))		print_liste_field_titre($langs->trans("BankdraftCustomerCode"),$_SERVER["PHP_SELF"],"s.code_client",'','','align="center"');
+	if (! empty($arrayfields['s.code_compta']['checked']))		print_liste_field_titre($langs->trans("AccountingCustomerCode"),$_SERVER["PHP_SELF"],"s.code_compta",'','','align="center"');
+    if (! empty($arrayfields['sr.iban_prefix']['checked']))		print_liste_field_titre($langs->trans("iban"),$_SERVER["PHP_SELF"],"sr.iban_prefix",'','','align="left"');
+    if (! empty($arrayfields['sr.bic']['checked']))				print_liste_field_titre($langs->trans("bic"),$_SERVER["PHP_SELF"],"sr.bic",'','','align="left"');
+    if (! empty($arrayfields['p.datec']['checked']))			print_liste_field_titre($langs->trans("BankdraftDate"),$_SERVER["PHP_SELF"],"p.datec","","",'align="center"');
+    if (! empty($arrayfields['pl.amount']['checked']))			print_liste_field_titre($langs->trans("BankdraftRequestAmount"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
+	if (! empty($arrayfields['f.total_ttc']['checked']))		print_liste_field_titre($langs->trans("BankdraftRequestAmountTtc"),$_SERVER["PHP_SELF"],"f.total_ttc","","",'align="right"');
     print '<td class="liste_titre">&nbsp;</td>';
+	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"],"",'','','align="center"',$sortfield,$sortorder,'maxwidthsearch ');
     print '</tr>';
 
-    print '<form action="liste.php" method="GET">';
+    //print '<form action="liste.php" method="GET">';
     print '<tr class="liste_titre">';
     print '<td class="liste_titre"><input type="text" class="flat" name="search_ligne" value="'. $search_line.'" size="6"></td>';
     print '<td class="liste_titre"><input type="text" class="flat" name="search_bon" value="'. $search_bon.'" size="8"></td>';
@@ -220,10 +227,16 @@ if ($result)
     print '<td class="liste_titre">&nbsp;</td>';
     print '<td class="liste_titre">&nbsp;</td>';
     print '<td class="liste_titre">&nbsp;</td>';
+	print '<td class="liste_titre">&nbsp;</td>';
     print '<td class="liste_titre">&nbsp;</td>';
 	print '<td class="liste_titre">&nbsp;</td>';
-    print '<td class="liste_titre" align="right"><input type="image" class="liste_titre" src="'.img_picto($langs->trans("Search"),'search.png','','',1).'" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'"></td>';
-    print '</tr>';
+    //print '<td class="liste_titre" align="right"><input type="image" class="liste_titre" src="'.img_picto($langs->trans("Search"),'search.png','','',1).'" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'"></td>';
+    print '<td align="right" class="liste_titre">';
+	$searchpicto=$form->showFilterAndCheckAddButtons($massactionbutton?1:0, 'checkforselect', 1);
+	print $searchpicto;
+	print '</td>';
+	
+	print '</tr>';
     print '</form>';
 
     $var=True;
