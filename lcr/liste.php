@@ -50,11 +50,16 @@ dol_include_once('/lcr/class/bonlcr.class.php');
 dol_include_once('/lcr/class/lignelcr.class.php');
 
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 
-$langs->load("banks");
-$langs->load("lcr");
-$langs->load("companies");
-$langs->load("categories");
+
+// langs 
+
+$langs->loadLangs(array('bills','banks','companies','lcr','categories'));
+//$langs->load("banks");
+//$langs->load("lcr");
+//$langs->load("companies");
+//$langs->load("categories");
 
 // Security check
 $socid = GETPOST('socid','int');
@@ -89,19 +94,21 @@ $statut = GETPOST('statut','int');
 
 // add choice column
 $arrayfields=array(
+	'p.rowid'=>array('label'=>$langs->trans("ref"), 'checked'=>1),
     'p.ref'=>array('label'=>$langs->trans("BankdraftReceipts"), 'checked'=>1),
     'f.facnumber'=>array('label'=>$langs->trans("BankdraftBills"), 'checked'=>1),
 	's.nom'=>array('label'=>$langs->trans("BankdraftCompany"), 'checked'=>1),
 	's.code_client'=>array('label'=>$langs->trans("BankdraftCustomerCode"), 'checked'=>1),
 	//// to do change trans
 	's.code_compta'=>array('label'=>$langs->trans("AccountingCustomerCode"), 'checked'=>1),
-	'sr.iban_prefix'=>array('label'=>$langs->trans("iban"), 'checked'=>1),
-	'sr.bic'=>array('label'=>$langs->trans("bic"), 'checked'=>1),
-	///////
+	////////
+	'sr.iban_prefix'=>array('label'=>$langs->trans("IBANNumber"), 'checked'=>1),
+	'sr.bic'=>array('label'=>$langs->trans("BICNumber"), 'checked'=>1),
 	'p.datec'=>array('label'=>$langs->trans("BankdraftDate"), 'checked'=>1),
 	'pl.amount'=>array('label'=>$langs->trans("BankdraftRequestAmount"), 'checked'=>1),
-	'f.total_ttc'=>array('label'=>$langs->trans("BankdraftRequestAmountTtc"), 'checked'=>1)
-	
+	'f.total_ttc'=>array('label'=>$langs->trans("BankdraftRequestAmountTtc"), 'checked'=>1),
+	'f.datef'=>array('label'=>$langs->trans("DateInvoice"), 'checked'=>1),
+	'f.date_lim_reglement'=>array('label'=>$langs->trans("DateMaxPayment"), 'checked'=>1)
 	);
 
 //////////////
@@ -130,7 +137,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 llxHeader('',$langs->trans("BankdraftLines"));
 
 $sql = "SELECT p.rowid, p.ref, p.statut, p.datec";
-$sql.= " ,f.rowid as facid, f.facnumber, f.total_ttc";
+$sql.= " ,f.rowid as facid, f.facnumber, f.total_ttc, f.datef, f.date_lim_reglement ";
 $sql.= " , s.rowid as socid, s.nom, s.code_client, s.code_compta";
 $sql.= " , pl.amount, pl.statut as statut_ligne, pl.rowid as rowid_ligne";
 $sql.= " , sr.iban_prefix, sr.bic, sr.fk_soc";
@@ -200,15 +207,17 @@ if ($result)
     print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
     print '<tr class="liste_titre_filter">';
-    if (! empty($arrayfields['p.ref']['checked']))				print '<td class="liste_titre">'.$langs->trans("BankdraftLine").'</td>';
+    if (! empty($arrayfields['p.rowid']['checked']))			print '<td class="liste_titre">'.$langs->trans("BankdraftLine").'</td>';
     if (! empty($arrayfields['p.ref']['checked']))				print_liste_field_titre($langs->trans("BankdraftReceipts"),$_SERVER["PHP_SELF"],"p.ref");
     if (! empty($arrayfields['f.facnumber']['checked']))		print_liste_field_titre($langs->trans("BankdraftBills"),$_SERVER["PHP_SELF"],"f.facnumber",'',$urladd);
     if (! empty($arrayfields['s.nom']['checked']))				print_liste_field_titre($langs->trans("BankdraftCompany"),$_SERVER["PHP_SELF"],"s.nom");
     if (! empty($arrayfields['s.code_client']['checked']))		print_liste_field_titre($langs->trans("BankdraftCustomerCode"),$_SERVER["PHP_SELF"],"s.code_client",'','','align="center"');
 	if (! empty($arrayfields['s.code_compta']['checked']))		print_liste_field_titre($langs->trans("AccountingCustomerCode"),$_SERVER["PHP_SELF"],"s.code_compta",'','','align="center"');
-    if (! empty($arrayfields['sr.iban_prefix']['checked']))		print_liste_field_titre($langs->trans("iban"),$_SERVER["PHP_SELF"],"sr.iban_prefix",'','','align="left"');
-    if (! empty($arrayfields['sr.bic']['checked']))				print_liste_field_titre($langs->trans("bic"),$_SERVER["PHP_SELF"],"sr.bic",'','','align="left"');
+    if (! empty($arrayfields['sr.iban_prefix']['checked']))		print_liste_field_titre($langs->trans("IBANNumber"),$_SERVER["PHP_SELF"],"sr.iban_prefix",'','','align="left"');
+    if (! empty($arrayfields['sr.bic']['checked']))				print_liste_field_titre($langs->trans("BICNumber"),$_SERVER["PHP_SELF"],"sr.bic",'','','align="left"');
     if (! empty($arrayfields['p.datec']['checked']))			print_liste_field_titre($langs->trans("BankdraftDate"),$_SERVER["PHP_SELF"],"p.datec","","",'align="center"');
+    if (! empty($arrayfields['f.datef']['checked']))			print_liste_field_titre($langs->trans("DateInvoice"),$_SERVER["PHP_SELF"],"f.datef","","",'align="center"');
+    if (! empty($arrayfields['f.date_lim_reglement']['checked']))			print_liste_field_titre($langs->trans("DateMaxPayment"),$_SERVER["PHP_SELF"],"f.date_lim_reglement","","",'align="center"');
     if (! empty($arrayfields['pl.amount']['checked']))			print_liste_field_titre($langs->trans("BankdraftRequestAmount"),$_SERVER["PHP_SELF"],"pl.amount","","",'align="right"');
 	if (! empty($arrayfields['f.total_ttc']['checked']))		print_liste_field_titre($langs->trans("BankdraftRequestAmountTtc"),$_SERVER["PHP_SELF"],"f.total_ttc","","",'align="right"');
     print '<td class="liste_titre">&nbsp;</td>';
@@ -217,17 +226,19 @@ if ($result)
 
     //print '<form action="liste.php" method="GET">';
     print '<tr class="liste_titre">';
-    if (! empty($arrayfields['p.ref']['checked']))				print '<td class="liste_titre"><input type="text" class="flat" name="search_ligne" value="'. $search_line.'" size="6"></td>';
-    if (! empty($arrayfields['p.ref']['checked']))				print '<td class="liste_titre"><input type="text" class="flat" name="search_bon" value="'. $search_bon.'" size="8"></td>';
-    if (! empty($arrayfields['f.facnumber']['checked']))		print '<td class="liste_titre"><input type="text" class="flat" name="search_invoice" value="'. $search_invoice.'" size="8"></td>';
-	if (! empty($arrayfields['s.nom']['checked']))				print '<td class="liste_titre"><input type="text" class="flat" name="search_societe" value="'. $search_societe.'" size="12"></td>';
-    if (! empty($arrayfields['s.code_client']['checked']))		print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code" value="'. $search_code.'" size="8"></td>';
-	if (! empty($arrayfields['s.code_compta']['checked']))		print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code_compta" value="'. $search_code_compta.'" size="8"></td>';
-    if (! empty($arrayfields['sr.iban_prefix']['checked']))		print '<td class="liste_titre">&nbsp;</td>';
-    if (! empty($arrayfields['sr.bic']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
-    if (! empty($arrayfields['p.datec']['checked']))			print '<td class="liste_titre">&nbsp;</td>';
-	if (! empty($arrayfields['pl.amount']['checked']))			print '<td class="liste_titre">&nbsp;</td>';
-    if (! empty($arrayfields['f.total_ttc']['checked']))		print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['p.rowid']['checked']))					print '<td class="liste_titre"><input type="text" class="flat" name="search_ligne" value="'. $search_line.'" size="6"></td>';
+    if (! empty($arrayfields['p.ref']['checked']))					print '<td class="liste_titre"><input type="text" class="flat" name="search_bon" value="'. $search_bon.'" size="8"></td>';
+    if (! empty($arrayfields['f.facnumber']['checked']))			print '<td class="liste_titre"><input type="text" class="flat" name="search_invoice" value="'. $search_invoice.'" size="8"></td>';
+	if (! empty($arrayfields['s.nom']['checked']))					print '<td class="liste_titre"><input type="text" class="flat" name="search_societe" value="'. $search_societe.'" size="12"></td>';
+    if (! empty($arrayfields['s.code_client']['checked']))			print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code" value="'. $search_code.'" size="8"></td>';
+	if (! empty($arrayfields['s.code_compta']['checked']))			print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code_compta" value="'. $search_code_compta.'" size="8"></td>';
+    if (! empty($arrayfields['sr.iban_prefix']['checked']))			print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['sr.bic']['checked']))					print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['p.datec']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['f.datef']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['f.date_lim_reglement']['checked']))	print '<td class="liste_titre">&nbsp;</td>';
+	if (! empty($arrayfields['pl.amount']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['f.total_ttc']['checked']))			print '<td class="liste_titre">&nbsp;</td>';
 	print '<td class="liste_titre">&nbsp;</td>';
     //print '<td class="liste_titre" align="right"><input type="image" class="liste_titre" src="'.img_picto($langs->trans("Search"),'search.png','','',1).'" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'"></td>';
     print '<td align="right" class="liste_titre">';
@@ -249,7 +260,7 @@ if ($result)
 		print '<tr class="oddeven">';
 
 		// reference
-		if (! empty($arrayfields['p.ref']['checked']))
+		if (! empty($arrayfields['p.rowid']['checked']))
 		{
 			print "<td>";
 		
@@ -315,6 +326,18 @@ if ($result)
 		if (! empty($arrayfields['p.datec']['checked']))
 		{
         print '<td align="center">'.dol_print_date($db->jdate($obj->datec),'day')."</td>\n";
+		}
+		
+		// date invoice
+		if (! empty($arrayfields['f.datef']['checked']))
+		{
+        print '<td align="center">'.dol_print_date($db->jdate($obj->datef),'day')."</td>\n";
+		}
+		
+		// date lim reglement
+		if (! empty($arrayfields['f.date_lim_reglement']['checked']))
+		{
+        print '<td align="center">'.dol_print_date($db->jdate($obj->date_lim_reglement),'day')."</td>\n";
 		}
 		
 		//total lcr
