@@ -200,7 +200,7 @@ if ($result)
     print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
     print '<tr class="liste_titre_filter">';
-    print '<td class="liste_titre">'.$langs->trans("BankdraftLine").'</td>';
+    if (! empty($arrayfields['p.ref']['checked']))				print '<td class="liste_titre">'.$langs->trans("BankdraftLine").'</td>';
     if (! empty($arrayfields['p.ref']['checked']))				print_liste_field_titre($langs->trans("BankdraftReceipts"),$_SERVER["PHP_SELF"],"p.ref");
     if (! empty($arrayfields['f.facnumber']['checked']))		print_liste_field_titre($langs->trans("BankdraftBills"),$_SERVER["PHP_SELF"],"f.facnumber",'',$urladd);
     if (! empty($arrayfields['s.nom']['checked']))				print_liste_field_titre($langs->trans("BankdraftCompany"),$_SERVER["PHP_SELF"],"s.nom");
@@ -217,18 +217,17 @@ if ($result)
 
     //print '<form action="liste.php" method="GET">';
     print '<tr class="liste_titre">';
-    print '<td class="liste_titre"><input type="text" class="flat" name="search_ligne" value="'. $search_line.'" size="6"></td>';
-    print '<td class="liste_titre"><input type="text" class="flat" name="search_bon" value="'. $search_bon.'" size="8"></td>';
-    print '<td class="liste_titre"><input type="text" class="flat" name="search_invoice" value="'. $search_invoice.'" size="8"></td>';
-   
-    print '<td class="liste_titre"><input type="text" class="flat" name="search_societe" value="'. $search_societe.'" size="12"></td>';
-    print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code" value="'. $search_code.'" size="8"></td>';
-	print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code_compta" value="'. $search_code_compta.'" size="8"></td>';
-    print '<td class="liste_titre">&nbsp;</td>';
-    print '<td class="liste_titre">&nbsp;</td>';
-    print '<td class="liste_titre">&nbsp;</td>';
-	print '<td class="liste_titre">&nbsp;</td>';
-    print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['p.ref']['checked']))				print '<td class="liste_titre"><input type="text" class="flat" name="search_ligne" value="'. $search_line.'" size="6"></td>';
+    if (! empty($arrayfields['p.ref']['checked']))				print '<td class="liste_titre"><input type="text" class="flat" name="search_bon" value="'. $search_bon.'" size="8"></td>';
+    if (! empty($arrayfields['f.facnumber']['checked']))		print '<td class="liste_titre"><input type="text" class="flat" name="search_invoice" value="'. $search_invoice.'" size="8"></td>';
+	if (! empty($arrayfields['s.nom']['checked']))				print '<td class="liste_titre"><input type="text" class="flat" name="search_societe" value="'. $search_societe.'" size="12"></td>';
+    if (! empty($arrayfields['s.code_client']['checked']))		print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code" value="'. $search_code.'" size="8"></td>';
+	if (! empty($arrayfields['s.code_compta']['checked']))		print '<td class="liste_titre" align="center"><input type="text" class="flat" name="search_code_compta" value="'. $search_code_compta.'" size="8"></td>';
+    if (! empty($arrayfields['sr.iban_prefix']['checked']))		print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['sr.bic']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['p.datec']['checked']))			print '<td class="liste_titre">&nbsp;</td>';
+	if (! empty($arrayfields['pl.amount']['checked']))			print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['f.total_ttc']['checked']))		print '<td class="liste_titre">&nbsp;</td>';
 	print '<td class="liste_titre">&nbsp;</td>';
     //print '<td class="liste_titre" align="right"><input type="image" class="liste_titre" src="'.img_picto($langs->trans("Search"),'search.png','','',1).'" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'"></td>';
     print '<td align="right" class="liste_titre">';
