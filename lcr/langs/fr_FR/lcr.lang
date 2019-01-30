@@ -1,0 +1,154 @@
+# Copyright (C) 2013 
+#
+# This program is free software: you can redistribute it and / or modify
+# It under the terms of the GNU General Public License as published by
+# The Free Software Foundation, Either Version 3 of the License, or
+# (At your option) Any later versions.
+#
+# This program is distributed in the hope That It Will Be Useful,
+# WITHOUT ANY WARRANTY purpose; without the odd implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# Along with this program. If not, see <http://www.gnu.org/licenses/>.
+# Dolibarr language file - fr_FR - Inventaire
+
+CHARSET=UTF-8
+
+----Lang----
+lcr=Lcr
+
+----Param user----
+ReadBankdraft=Lire Lcr
+CreateBankdraft=Créer / modifier Lcr
+CreditBankdraft=Créditer / rejeter Lcr
+ConfigureBankdraft=Configurer Lcr
+SendBankdraft=Envoyer Lcr en banque
+ShowBankdraft=Voir les Lcr
+
+----configuration----
+BankdraftSetup=Configuration des
+BankdraftToReceive=Compte bancaire pour recevoir les Lcr
+BankdraftSetupSaved=Enregistrer
+BankdraftResponsibleUser=Utilisateur responsable des Lcr
+BankdraftErrorModuleSetupNotComplete=Paramétrage du module Lcr incomplet
+
+----menu----
+BankdraftStandingOrders=Lcr
+BankdraftNewStandingOrder=Nouvelle Lcr
+BankdraftReceipts=Bordereaux
+BankdraftList=Liste
+BankdraftBills=Factures
+BankdraftRejects=Lcr rejetées
+BankdraftStatistics=Statistiques
+BankdraftCustomersStandingOrdersArea=Espace des
+
+----Facture Lcr----
+BankdraftLastReceipts=Les %s derniers bons de Lcr
+NbOfInvoiceToBankdraft=Nb. de factures en attente de Lcr
+BankdraftInvoiceWaiting=Factures en attente de Lcr
+AmountToBankdraft=Somme à prélever
+BankdraftNoInvoice=Aucune facture client ouverte avec des 'Demandes de Lcr' n'est en attente. Rendez vous sur l'onglet '%s' sur la fiche facture pour faire une demande. 
+LastBankdraftReceipt=Les %s derniers bordereaux de Lcr
+BankdraftDate=Date de demande
+BankdraftAmount=Montant
+BankdraftStatus=État
+Bankdraft=Lcr
+MakeBankdraftRequest=Faire une demande de Lcr
+BankdraftRequestAmount=Montant de la Lcr 
+BankdraftRequestAmountTtc=Montant facture TTC
+BankdraftAmountTTC=Montant TTC
+BankdraftStatusCredited=Créditée
+BankdraftStatusRefused=Rejetée
+
+----Fiche Lcr----
+BankdraftRef=Réf
+BankdraftBank=Banque
+BankdraftTransData=Date de transmission
+BankdraftTransMetod=Méthode de transmission
+BankdraftCreditDate=Crédité le
+BankdraftFile=Fichier de prélèvement des Lcr
+BankdraftNotifyTransmision=Transmission du bon
+BankdraftSetToStatusSent=Mettre au statut "Fichier envoyé"
+BankdraftNotifyCredit=Crédit du bon
+BankdraftClassCredited=Classer créditer
+BankdraftDelete=Supprimer
+BankdraftBy=Par
+BankdraftLines=Lignes
+BankdraftThirdParty=Tiers
+
+----Demande Lcr----
+BankdraftMode=Mode
+BankdraftImmediat=Comptant
+BankdraftEscompte=A l'escompte
+BankdraftType=Type d'encaissement
+Bankdraftdemande=Générer fichier Lcr
+BankdraftCreateAll=Prélever tout
+BankdraftCreat=Date de création
+BankdraftPayment=Paiement Lcr
+BankdraftCredit=Date crédit
+BankdraftTrans=Date de transmission
+BankdraftOrderWaiting=Lcr en attente
+BankdraftSend=Envoyer
+NoInvoiceCouldBeBankdraft=Aucune facture percevable. Vérifiez que les factures sont sur des sociétés  dont le compte bancaire par défaut est correctement renseigné.
+BankdraftFileNotCapable=Impossible de générer le fichier des Lcr pour votre pays %s (Votre pays n'est pas supporté)
+BankdraftNewStandingOrder=Nouvelle Lcr
+BankdraftDateMaxPayment=Date limite de paiement
+BankdraftConfirm=Confirmer
+BankdraftStatusWaiting=En attente
+BankdraftStatusTrans=Transmise
+DoStandingOrdersBeforePayments=Cet onglet vous permet de générer une Lcr. Une fois la demande faite, allez dans le menu Banque -> Lcr pour finaliser la demande . Lorsque l'ordre de paiement est fermé, le paiement sur la facture sera automatiquement enregistrée, et la facture fermée si le reste à payer est nul.
+BankdraftRequestErrorNilAmount=Impossible de créer une demande de Lcr pour un montant nul
+
+----Rejet Lcr----
+BankdraftReason=Raison
+BankdraftToBill=À facturer
+BankdraftTotal=Total
+BankdraftStandingOrderReject=Émettre un rejet
+BankdraftRefused=Rejet de Lcr
+BankdraftRefusedConfirm=Êtes-vous sûr de vouloir saisir un rejet de Lcr pour la société
+BankdraftRefusedData=Date du rejet
+BankdraftRefusedReason=Motif du rejet
+BankdraftRefusedInvoicing=Facturation du rejet
+BankdraftNoInvoiceRefused=Ne pas facturer le rejet
+BankdraftInvoiceRefused=Paiement Lcr rejeté
+BankdraftStatusMotif0=Non renseignée
+BankdraftStatusMotif1=Provision insuffisante
+BankdraftStatusMotif2=Contestée
+BankdraftStatusMotif3=Pas d'ordres
+BankdraftStatusMotif4=Opposition sur compte
+BankdraftStatusMotif5=Numéro de compte inexploitable
+BankdraftStatusMotif6=Compte solde
+BankdraftStatusMotif7=Décision judiciaire
+BankdraftStatusMotif8=Autre motif
+NotPossibleForThisStatusOfBankdraftReceiptORLine=Fonction non disponible. Le statut du bon de Lcr doit être mis à 'créditer' avant d'effectuer un rejet sur des lignes spécifiques.
+
+----Statistiques Lcr----
+BankdraftError=Erreur
+BankdraftNumber=Nombre
+BankdraftRejectStatistics=Statistiques des rejets de Lcr
+BankdraftRequestsDone=%s demandes de Lcr enregistrées
+BankdraftRequestStandingOrderToTreat=Demandes de Lcr à traiter
+BankdraftRequestStandingOrderTreated=Demandes de Lcr traitées
+
+----Lignes Lcr----
+BankdraftLine=Lignes
+BankdraftCompany=Société
+BankdraftCustomerCode=Code client
+
+BankdraftClassCreditedConfirm=Êtes-vous sûr de vouloir classer ce bon de Lcr comme crédité sur votre compte bancaire ?
+ThisWillAlsoAddPaymentOnInvoice=Ceci créera également les paiements sur les factures et les classera payées
+
+----Notifications----
+InfoCreditSubject=Crédit prélèvement %s à la banque
+InfoCreditMessage=Le bon de prélèvement %s a été crédité par la banque.<br>Info crédit : %s
+InfoTransSubject=Transmission du prélèvement %s à la banque
+InfoTransMessage=Le bon de prélèvement %s a été transmis à la banque par %s %s.<br><br>
+InfoTransData=Montant : %s<br>Méthode : %s<br>Date : %s
+BankdraftInfoRejectSubject=Ordre de prélèvement rejeté
+BankdraftInfoRejectMessage=Bonjour, l'ordre de prélèvement de la facture %s liée à la société %s, avec un montant de %s a été refusé par la banque.%s
+ModeWarning=Option mode réel non établi, nous allons arrêter après cette simulation
+
+----Facture liste----
+LcrInWallet=Lcr en portefeuille
