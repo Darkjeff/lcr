@@ -49,6 +49,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 dol_include_once('/lcr/class/bonlcr.class.php');
 dol_include_once('/lcr/class/lignelcr.class.php');
 
+require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
 $langs->load("banks");
 $langs->load("lcr");
@@ -61,6 +62,18 @@ if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'lcr','','','bons');
 
 // Get supervariables
+
+$mesg = '';
+$action = GETPOST('action','aZ09');
+$cancel = GETPOST('cancel','alpha');
+$id = GETPOST('id', 'int');
+$rowid = GETPOST('rowid', 'int');
+$contextpage=GETPOST('contextpage','aZ')?GETPOST('contextpage','aZ'):'accountingaccountlist';   // To manage different context of search
+
+
+
+
+
 $page = GETPOST('page','int');
 $sortorder = ((GETPOST('sortorder','alpha')=="")) ? "DESC" : GETPOST('sortorder','alpha');
 $sortfield = ((GETPOST('sortfield','alpha')=="")) ? "p.datec" : GETPOST('sortfield','alpha');
@@ -69,6 +82,10 @@ $search_bon = GETPOST('search_bon','alpha');
 $search_code = GETPOST('search_code','alpha');
 $search_societe = GETPOST('search_societe','alpha');
 $statut = GETPOST('statut','int');
+
+
+
+
 
 // add choice column
 $arrayfields=array(
@@ -95,6 +112,16 @@ $ligne=new LigneLcr($db,$user);
 
 $offset = $conf->liste_limit * $page ;
 
+//actions
+
+if (GETPOST('cancel','alpha')) { $action='list'; $massaction=''; }
+if (! GETPOST('confirmmassaction','alpha')) { $massaction=''; }
+
+$parameters=array();
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+
+include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 /**
  *  View
