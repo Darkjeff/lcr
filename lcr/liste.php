@@ -87,7 +87,9 @@ $search_bon = GETPOST('search_bon','alpha');
 $search_code = GETPOST('search_code','alpha');
 $search_societe = GETPOST('search_societe','alpha');
 $statut = GETPOST('statut','int');
-
+$search_day=GETPOST("search_day","int");
+$search_month=GETPOST("search_month","int");
+$search_year=GETPOST("search_year","int");
 
 
 
@@ -175,6 +177,21 @@ if ($search_societe)
     $sql .= " AND s.nom LIKE '%".$search_societe."%'";
 }
 
+if ($search_month > 0)
+{
+	if ($search_year > 0 && empty($search_day))
+		$sql.= " AND f.date_lim_reglement BETWEEN '".$db->idate(dol_get_first_day($search_year,$search_month,false))."' AND '".$db->idate(dol_get_last_day($search_year,$search_month,false))."'";
+		else if ($search_year > 0 && ! empty($search_day))
+			$sql.= " AND f.date_lim_reglement BETWEEN '".$db->idate(dol_mktime(0, 0, 0, $search_month, $search_day, $search_year))."' AND '".$db->idate(dol_mktime(23, 59, 59, $search_month, $search_day, $search_year))."'";
+			else
+				$sql.= " AND date_format(f.date_lim_reglement, '%m') = '".$db->escape($search_month)."'";
+}
+else if ($search_year > 0)
+{
+	$sql.= " AND f.date_lim_reglement BETWEEN '".$db->idate(dol_get_first_day($search_year,1,false))."' AND '".$db->idate(dol_get_last_day($search_year,12,false))."'";
+}
+
+
 $sql.=$db->order($sortfield,$sortorder);
 $sql.=$db->plimit($conf->liste_limit+1, $offset);
 
@@ -236,7 +253,15 @@ if ($result)
     if (! empty($arrayfields['sr.bic']['checked']))					print '<td class="liste_titre">&nbsp;</td>';
     if (! empty($arrayfields['p.datec']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
     if (! empty($arrayfields['f.datef']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
-    if (! empty($arrayfields['f.date_lim_reglement']['checked']))	print '<td class="liste_titre">&nbsp;</td>';
+    if (! empty($arrayfields['f.date_lim_reglement']['checked']))	print '<td class="liste_titre"><input class="flat valignmiddle" type="text" size="1" maxlength="2" name="search_month" value="'.$search_month.'"size="8"></td>';
+	/*	{
+	print '<td class="liste_titre center nowraponall">';
+	print '<input class="flat valignmiddle" type="text" size="1" maxlength="2" name="search_month" value="'.$search_month.'">';
+   	$formother->select_year($search_year,'search_year',1, 20, 5);
+	print '</td>';
+	}
+	*/
+	
 	if (! empty($arrayfields['pl.amount']['checked']))				print '<td class="liste_titre">&nbsp;</td>';
     if (! empty($arrayfields['f.total_ttc']['checked']))			print '<td class="liste_titre">&nbsp;</td>';
 	print '<td class="liste_titre">&nbsp;</td>';
