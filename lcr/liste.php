@@ -153,7 +153,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 /**
  *  View
  */
- 
+$form = new Form($db);
 $formother = new FormOther($db);
 
 llxHeader('',$langs->trans("BankdraftLines"));
@@ -252,7 +252,7 @@ if ($result)
     print"\n<!-- debut table -->\n";
     print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 	
-	print '<input type="button" class="butAction" name="export_file" value="' . $langs->trans("ExportLCR") . '" onclick="launch_export();" />';
+	
 
     print '<tr class="liste_titre_filter">';
     if (! empty($arrayfields['p.rowid']['checked']))				print '<td class="liste_titre">'.$langs->trans("BankdraftLine").'</td>';
@@ -308,6 +308,20 @@ if ($result)
 	print '</td>';
 	
 	print '</tr>';
+	
+	print '
+	<script type="text/javascript">
+		function launch_export() {
+			$("div.fiche form input[name=\"action\"]").val("export_file");
+			$("div.fiche form input[type=\"submit\"]").click();
+			$("div.fiche form input[name=\"action\"]").val("");
+		}
+	</script>';
+	print '<div class="tabsAction tabsActionNoBottom">';
+	print '<input type="button" class="butAction" name="export_file" value="' . $langs->trans("ExportLCR") . '" onclick="launch_export();" />';
+	print '</div>';
+	
+	
     print '</form>';
 
     $var=True;
@@ -318,14 +332,7 @@ if ($result)
 
         //$var=!$var;
 		
-		print '
-	<script type="text/javascript">
-		function launch_export() {
-			$("div.fiche form input[name=\"action\"]").val("export_file");
-			$("div.fiche form input[type=\"submit\"]").click();
-			$("div.fiche form input[name=\"action\"]").val("");
-		}
-	</script>';
+		
 		
 		
 		// Export into a file with format defined into setup
@@ -445,11 +452,13 @@ if ($action == 'export_file') {
 		}
 		
 
+
         print '<td>&nbsp;</td>';
 
         print "</tr>\n";
         $i++;
     }
+	
     print "</table>";
     $db->free($result);
 }
@@ -459,6 +468,5 @@ else
 }
 
 $db->close();
-
 
 llxFooter();
